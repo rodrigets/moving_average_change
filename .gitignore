@@ -1,0 +1,7 @@
+**/__pycache__
+local_settings.py
+**/media/*
+.vscode/
+env
+*.idea
+static/
