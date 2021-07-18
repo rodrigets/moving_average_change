@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta
-import json
+import logging
 import pytz
 from django.http import HttpResponse, response
 from rest_framework.views import APIView
 from .models import MmsVariation
 from .tasks import get_candle_first_to_save
+
+logger = logging.getLogger(__name__)
 
 
 class MmsVariationView(APIView):
@@ -25,7 +27,11 @@ class MmsVariationView(APIView):
             return HttpResponse("First successful synchronization", status=200)
 
         except Exception as ex:
-            return HttpResponse(f"errors:{str(ex)}", status=500)
+            logger.error(f"Error: {str(ex)}")
+            return HttpResponse(
+                "Unable to load initial data, please try again later.",
+                status=500,
+            )
 
     def get(self, request):
         """Returns data list according to parameters
@@ -49,10 +55,10 @@ class MmsVariationView(APIView):
             timestamp_to = self.request.query_params.get("to", timestamp_now)
             range = self.request.query_params.get("range", "")
 
-            if not pair or not timestamp_from or not timestamp_to or not range:
+            if not pair or not timestamp_from or not range:
                 return response.JsonResponse(
                     data={
-                        "error": "It is necessary to inform all parameters(pair, from, to, range)"
+                        "error": "It is necessary to inform all parameters(pair, from, range)"
                     },
                     status=500,
                 )
@@ -124,4 +130,8 @@ class MmsVariationView(APIView):
             return response.JsonResponse(data={"data": list_return}, status=200)
 
         except Exception as ex:
-            return response.JsonResponse(data={"error": str(ex)}, status=500)
+            logger.error(f"Error: {str(ex)}")
+            return response.JsonResponse(
+                data={"Error": "Unable to query data, try again later"},
+                status=500,
+            )
