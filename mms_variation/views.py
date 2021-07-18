@@ -43,9 +43,10 @@ class MmsVariationView(APIView):
         try:
             utc = pytz.UTC
             list_return = []
+            timestamp_now = int(datetime.timestamp(datetime.now()))
             pair = self.request.query_params.get("pair", "")
             timestamp_from = self.request.query_params.get("from", "")
-            timestamp_to = self.request.query_params.get("to", "")
+            timestamp_to = self.request.query_params.get("to", timestamp_now)
             range = self.request.query_params.get("range", "")
 
             if not pair or not timestamp_from or not timestamp_to or not range:
