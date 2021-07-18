@@ -46,3 +46,5 @@ docker exec -it moving_average_change_web_1 python3 manage.py crontab show
 
 <h4>Documentação das Apis</h4>
 https://documenter.getpostman.com/view/6583936/TzmCgsxq
+
+*Obs: Processo de carga inicial dos dados é acionado via POST.
